@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Carmelian Campus App</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Carmelian Campus">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* ===== Splash screen ===== */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease;
+    }
+
+    .app-logo {
+      width: 160px;
+      height: 160px;
+      border-radius: 28px;
+      box-shadow: 0 8px 30px rgba(94, 47, 14, 0.18);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .app-name {
+      margin-top: 22px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #5e2f0e;
+      letter-spacing: 1px;
+    }
+
+    .app-sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #a4793a;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .loading-bar-wrap {
+      margin-top: 30px;
+      width: 180px;
+      height: 5px;
+      background: #f0e6d8;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .loading-bar {
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, #b8860b, #5e2f0e);
+      border-radius: 3px;
+      animation: slide 1.2s ease-in-out infinite;
+    }
+
+    @keyframes slide {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(450%); }
+    }
+
+    /* ===== App frame ===== */
+    iframe {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="splash">
+    <img class="app-logo" src="icon-192.png" alt="Carmelian Campus App">
+    <div class="app-name">Carmelian Campus</div>
+    <div class="app-sub">Learn &middot; Grow &middot; Excel</div>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <iframe
+    id="app-frame"
+    src="https://script.google.com/macros/s/AKfycbyInYnSQ4VvbiqGQfYXYN8g1tAvrqQ7JVeGK350AJIoKbpTQ9agEHmsVwHwBjj0pEOJww/exec"
+    allow="fullscreen"
+    allowfullscreen
+  ></iframe>
+
+  <script>
+    // Register Service Worker - required for real PWA install
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js')
+          .then(function(reg) { console.log('SW registered:', reg.scope); })
+          .catch(function(err) { console.log('SW failed:', err); });
+      });
+    }
+
+    var frame = document.getElementById("app-frame");
+    var splash = document.getElementById("splash");
+
+    frame.onload = function() {
+      setTimeout(function() {
+        splash.style.opacity = "0";
+        setTimeout(function() { splash.style.display = "none"; }, 600);
+      }, 1000);
+    };
+
+    // Fallback: hide splash after 5s no matter what
+    setTimeout(function() {
+      splash.style.opacity = "0";
+      setTimeout(function() { splash.style.display = "none"; }, 600);
+    }, 5000);
+  </script>
+
+</body>
+</html>
